@@ -55,10 +55,6 @@ function App:init()
 	self.host, self.setHost = Roact.createBinding(priorHost or "")
 	self.port, self.setPort = Roact.createBinding(priorPort or "")
 
-	self.patchInfo, self.setPatchInfo = Roact.createBinding({
-		patch = PatchSet.newEmpty(),
-		timestamp = os.time(),
-	})
 	self.confirmationBindable = Instance.new("BindableEvent")
 	self.confirmationEvent = self.confirmationBindable.Event
 
@@ -66,6 +62,10 @@ function App:init()
 		appStatus = AppStatus.NotConnected,
 		guiEnabled = false,
 		confirmData = {},
+		patchData = {
+			patch = PatchSet.newEmpty(),
+			timestamp = os.time(),
+		},
 		notifications = {},
 		toolbarIcon = Assets.Images.PluginButton,
 		popups = {},
@@ -330,21 +330,25 @@ function App:startSession(host: string?, port: string?)
 
 		local now = os.time()
 
-		local old = self.patchInfo:getValue()
+		local old = self.state.patchData
 		if now - old.timestamp < 2 then
 			-- Patches that apply in the same second are
 			-- considered to be part of the same change for human clarity
 			local merged = PatchSet.newEmpty()
 			PatchSet.assign(merged, old.patch, patch)
 
-			self.setPatchInfo({
-				patch = merged,
-				timestamp = now,
+			self:setState({
+				patchData = {
+					patch = merged,
+					timestamp = now,
+				},
 			})
 		else
-			self.setPatchInfo({
-				patch = patch,
-				timestamp = now,
+			self:setState({
+				patchData = {
+					patch = patch,
+					timestamp = now,
+				},
 			})
 		end
 	end)
@@ -431,16 +435,6 @@ function App:startSession(host: string?, port: string?)
 	serveSession:start()
 
 	self.serveSession = serveSession
-
-	task.defer(function()
-		while self.serveSession == serveSession do
-			-- Trigger rerender to update timestamp text
-			local patchInfo = table.clone(self.patchInfo:getValue())
-			self.setPatchInfo(patchInfo)
-			local elapsed = os.time() - patchInfo.timestamp
-			task.wait(elapsed < 60 and 1 or elapsed / 5)
-		end
-	end)
 end
 
 function App:endSession()
@@ -574,7 +568,7 @@ function App:render()
 					Connected = createPageElement(AppStatus.Connected, {
 						projectName = self.state.projectName,
 						address = self.state.address,
-						patchInfo = self.patchInfo,
+						patchData = self.state.patchData,
 						serveSession = self.serveSession,
 
 						onDisconnect = function()
