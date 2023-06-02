@@ -95,14 +95,12 @@ end
 	Tells whether the given PatchSet contains changes to the given instance id
 ]]
 function PatchSet.containsId(patchSet, instanceMap, id)
-	for addedId in patchSet.added do
-		if addedId == id then
-			return true
-		end
+	if patchSet.added[id] ~= nil then
+		return true
 	end
 
 	for _, idOrInstance in patchSet.removed do
-		local removedId = if type(idOrInstance) == "string" then idOrInstance else instanceMap.fromInstances[idOrInstance]
+		local removedId = if Types.RbxId(idOrInstance) then idOrInstance else instanceMap.fromInstances[idOrInstance]
 		if removedId == id then
 			return true
 		end
@@ -118,7 +116,8 @@ function PatchSet.containsId(patchSet, instanceMap, id)
 end
 
 --[[
-	Tells whether the given PatchSet contains changes to the given instance
+	Tells whether the given PatchSet contains changes to the given instance. 
+	If the given InstanceMap does not contain the instance, this function always returns false.
 ]]
 function PatchSet.containsInstance(patchSet, instanceMap, instance)
 	local id = instanceMap.fromInstances[instance]
@@ -145,7 +144,7 @@ function PatchSet.containsOnlyId(patchSet, instanceMap, id)
 	end
 
 	for _, idOrInstance in patchSet.removed do
-		local removedId = if type(idOrInstance) == "string" then idOrInstance else instanceMap.fromInstances[idOrInstance]
+		local removedId = if Types.RbxId(idOrInstance) then idOrInstance else instanceMap.fromInstances[idOrInstance]
 		if removedId ~= id then
 			return false
 		end
@@ -161,7 +160,8 @@ function PatchSet.containsOnlyId(patchSet, instanceMap, id)
 end
 
 --[[
-	Tells whether the given PatchSet contains changes to nothing but the given instance
+	Tells whether the given PatchSet contains changes to nothing but the given instance.
+	If the given InstanceMap does not contain the instance, this function always returns false.
 ]]
 function PatchSet.containsOnlyInstance(patchSet, instanceMap, instance)
 	local id = instanceMap.fromInstances[instance]
@@ -186,7 +186,8 @@ function PatchSet.getUpdateForId(patchSet, id)
 end
 
 --[[
-	Returns the update to the given instance, or nil if there aren't any
+	Returns the update to the given instance, or nil if there aren't any.
+	If the given InstanceMap does not contain the instance, this function always returns nil.
 ]]
 function PatchSet.getUpdateForInstance(patchSet, instanceMap, instance)
 	local id = instanceMap.fromInstances[instance]
@@ -256,7 +257,7 @@ function PatchSet.humanSummary(instanceMap, patchSet)
 	for _, idOrInstance in ipairs(patchSet.removed) do
 		local instance, id
 
-		if type(idOrInstance) == "string" then
+		if Types.RbxId(idOrInstance) then
 			id = idOrInstance
 			instance = instanceMap.fromIds[id]
 		else
