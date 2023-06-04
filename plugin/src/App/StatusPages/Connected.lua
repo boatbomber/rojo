@@ -170,9 +170,19 @@ function ConnectedPage:getChangeInfoText()
 	end
 
 	local elapsed = os.time() - patchData.timestamp
-	local changes = PatchSet.countChanges(patchData.patch)
+	local unapplied = PatchSet.countChanges(patchData.unapplied)
 
-	return string.format("<i>Synced %d change%s %s</i>", changes, changes == 1 and "" or "s", timeSinceText(elapsed))
+	return
+		"<i>Synced "
+		.. timeSinceText(elapsed)
+		.. (if unapplied > 0 then
+			string.format(
+				", <font color=\"#FF8E3C\">but %d change%s failed to apply</font>",
+				unapplied,
+				unapplied == 1 and "" or "s"
+			)
+		else "")
+		.. "</i>"
 end
 
 function ConnectedPage:init()
