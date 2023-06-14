@@ -185,6 +185,43 @@ function ConnectedPage:getChangeInfoText()
 		.. "</i>"
 end
 
+function ConnectedPage:startChangeInfoTextUpdater()
+	-- Cancel any existing updater
+	self:stopChangeInfoTextUpdater()
+
+	-- Start a new updater
+	self.changeInfoTextUpdater = task.defer(function()
+		while true do
+			if self.state.hoveringChangeInfo then
+				self.setChangeInfoText("<u>" .. self:getChangeInfoText() .. "</u>")
+			else
+				self.setChangeInfoText(self:getChangeInfoText())
+			end
+
+			local elapsed = os.time() - self.props.patchData.timestamp
+			local updateInterval = 1
+
+			-- Update timestamp text as frequently as currently needed
+			for _, UnitData in ipairs(AGE_UNITS) do
+				local UnitSeconds = UnitData[1]
+				if elapsed > UnitSeconds then
+					updateInterval = UnitSeconds
+					break
+				end
+			end
+
+			task.wait(updateInterval)
+		end
+	end)
+end
+
+function ConnectedPage:stopChangeInfoTextUpdater()
+	if self.changeInfoTextUpdater then
+		task.cancel(self.changeInfoTextUpdater)
+		self.changeInfoTextUpdater = nil
+	end
+end
+
 function ConnectedPage:init()
 	self.changeDrawerMotor = Flipper.SingleMotor.new(0)
 	self.changeDrawerHeight = bindingUtil.fromMotor(self.changeDrawerMotor)
@@ -205,34 +242,21 @@ function ConnectedPage:init()
 
 	self:setState({
 		renderChanges = false,
+		hoveringChangeInfo = false,
 	})
 
 	self.changeInfoText, self.setChangeInfoText = Roact.createBinding("")
 
-	self.changeInfoTextUpdater = task.defer(function()
-		while true do
-			self.setChangeInfoText(self:getChangeInfoText())
-
-			local elapsed = os.time() - self.props.patchData.timestamp
-			local updateInterval = 1
-
-			-- Update timestamp text as frequently as currently needed
-			for _, UnitData in ipairs(AGE_UNITS) do
-				local UnitSeconds = UnitData[1]
-				if elapsed >= UnitSeconds then
-					updateInterval = UnitSeconds
-					break
-				end
-			end
-
-			task.wait(updateInterval)
-		end
-	end)
+	self:startChangeInfoTextUpdater()
 end
 
 function ConnectedPage:willUnmount()
-	if self.changeInfoTextUpdater then
-		task.cancel(self.changeInfoTextUpdater)
+	self:stopChangeInfoTextUpdater()
+end
+
+function ConnectedPage:didUpdate(previousProps)
+	if self.props.patchData.timestamp ~= previousProps.patchData.timestamp then
+		self:startChangeInfoTextUpdater()
 	end
 end
 
@@ -281,6 +305,20 @@ function ConnectedPage:render()
 				LayoutOrder = 3,
 				BackgroundTransparency = 1,
 
+				[Roact.Event.MouseEnter] = function()
+					self:setState({
+						hoveringChangeInfo = true,
+					})
+					self.setChangeInfoText("<u>" .. self:getChangeInfoText() .. "</u>")
+				end,
+
+				[Roact.Event.MouseLeave] = function()
+					self:setState({
+						hoveringChangeInfo = false,
+					})
+					self.setChangeInfoText(self:getChangeInfoText())
+				end,
+
 				[Roact.Event.Activated] = function()
 					if self.state.renderChanges then
 						self.changeDrawerMotor:setGoal(Flipper.Spring.new(0, {
@@ -294,6 +332,10 @@ function ConnectedPage:render()
 						}))
 					end
 				end,
+			}, {
+				Tooltip = e(Tooltip.Trigger, {
+					text = if self.state.renderChanges then "Hide the changes" else "View the changes",
+				}),
 			}),
 
 			ChangesDrawer = e(ChangesDrawer, {
