@@ -11,7 +11,10 @@
 * Select Instances from diff tree view ([#709])
 * Fix Rojo breaking when users undo/redo in Studio ([#708])
 * Improved sync info text on Connected page. ([#692])
-* Show failed to apply warning in patch visualizer. ([#717])
+* Fix patch visualizer breaking when instances are removed during sync ([#713])
+* Patch visualizer now indicates what changes failed to apply. ([#717])
+* Add buttons for navigation on the Connected page ([#722])
+* Improve tooltip behavior ([#723])
 
 [#631]: https://github.com/rojo-rbx/rojo/pull/631
 [#668]: https://github.com/rojo-rbx/rojo/pull/668
@@ -23,8 +26,10 @@
 [#709]: https://github.com/rojo-rbx/rojo/pull/709
 [#708]: https://github.com/rojo-rbx/rojo/pull/708
 [#692]: https://github.com/rojo-rbx/rojo/pull/692
+[#713]: https://github.com/rojo-rbx/rojo/pull/713
 [#717]: https://github.com/rojo-rbx/rojo/pull/717
-
+[#722]: https://github.com/rojo-rbx/rojo/pull/722
+[#723]: https://github.com/rojo-rbx/rojo/pull/723
 
 ## [7.3.0] - April 22, 2023
 * Added `$attributes` to project format. ([#574])
