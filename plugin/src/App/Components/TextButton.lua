@@ -42,7 +42,7 @@ end
 function TextButton:render()
 	return Theme.with(function(theme)
 		local textSize =
-			TextService:GetTextSize(self.props.text, 18, Enum.Font.GothamSemibold, Vector2.new(math.huge, math.huge))
+			TextService:GetTextSize(self.props.text, 18, Enum.Font.GothamMedium, Vector2.new(math.huge, math.huge))
 
 		local style = self.props.style
 

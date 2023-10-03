@@ -249,7 +249,14 @@ function App:addNotification(
 	end
 end
 
-function App:addThirdPartyNotification(source: string, text: string, timeout: number?, actions: { [string]: {text: string, style: string, layoutOrder: number, onClick: (any) -> ()} }?)
+function App:addThirdPartyNotification(
+	source: string,
+	text: string,
+	timeout: number?,
+	actions: {
+		[string]: { text: string, style: string, layoutOrder: number, onClick: (any) -> () },
+	}?
+)
 	if not Settings:get("showNotifications") then
 		return
 	end
@@ -409,18 +416,29 @@ function App:releaseSyncLock()
 	Log.trace("Could not release sync lock because it is owned by {}", lock.Value)
 end
 
-function App:requestPermission(plugin: Plugin, source: string, name: string, apis: {string}, initialState: {[string]: boolean?}): {[string]: boolean}
+function App:requestPermission(
+	plugin: Plugin,
+	source: string,
+	name: string,
+	apis: { string },
+	initialState: { [string]: boolean? }
+): { [string]: boolean }
 	local responseEvent = Instance.new("BindableEvent")
 
 	Log.info("The third-party plugin '{}' is requesting permission to use the API!", name)
 
-	local unloadProtection = if plugin then plugin.Unloading:Connect(function()
-		Log.warn("Cancelling API permission request for '{}' because the third-party plugin has been removed.", name)
-		responseEvent:Fire(initialState)
-	end) else nil
+	local unloadProtection = if plugin
+		then plugin.Unloading:Connect(function()
+			Log.warn(
+				"Cancelling API permission request for '{}' because the third-party plugin has been removed.",
+				name
+			)
+			responseEvent:Fire(initialState)
+		end)
+		else nil
 
 	self:setState(function(state)
-		state.popups[source  .. " Permissions"] = {
+		state.popups[source .. " Permissions"] = {
 			name = name,
 			content = e(PermissionPopup, {
 				responseEvent = responseEvent,
@@ -445,7 +463,7 @@ function App:requestPermission(plugin: Plugin, source: string, name: string, api
 	end
 
 	self:setState(function(state)
-		state.popups[source  .. " Permissions"] = nil
+		state.popups[source .. " Permissions"] = nil
 		return state
 	end)
 
@@ -716,10 +734,11 @@ function App:render()
 
 	local popups = {}
 	for id, popup in self.state.popups do
-		popups["Rojo_"..id] = e(StudioPluginGui, {
+		popups["Rojo_" .. id] = e(StudioPluginGui, {
 			id = id,
 			title = popup.name,
 			active = true,
+			isEphemeral = true,
 
 			initDockState = popup.dockState or Enum.InitialDockState.Top,
 			initEnabled = true,
@@ -730,18 +749,7 @@ function App:render()
 			zIndexBehavior = Enum.ZIndexBehavior.Sibling,
 
 			onClose = popup.onClose,
-		}, {
-			Content = popup.content,
-
-			Background = Theme.with(function(theme)
-				return e("Frame", {
-					Size = UDim2.new(1, 0, 1, 0),
-					BackgroundColor3 = theme.BackgroundColor,
-					ZIndex = 0,
-					BorderSizePixel = 0,
-				})
-			end),
-		})
+		}, popup.content)
 	end
 
 	return e(StudioPluginContext.Provider, {
@@ -864,13 +872,7 @@ function App:render()
 							for api in apiMap do
 								table.insert(apiList, api)
 							end
-							local response = self:requestPermission(
-								plugin,
-								source,
-								name,
-								apiList,
-								apiMap
-							)
+							local response = self:requestPermission(plugin, source, name, apiList, apiMap)
 							self.headlessAPI:_setPermissions(source, name, response)
 						end,
 					}),
