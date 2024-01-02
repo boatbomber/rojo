@@ -1,9 +1,11 @@
 # Rojo Changelog
 
 ## Unreleased Changes
+* Added headless API for Studio companion plugins. ([#631])
 * Improved the visualization for array properties like Tags ([#829])
 * Significantly improved performance of `rojo serve`, `rojo build --watch`, and `rojo sourcemap --watch` on macOS. [#830]
 
+[#631]: https://github.com/rojo-rbx/rojo/pull/631
 [#829]: https://github.com/rojo-rbx/rojo/pull/829
 [#830]: https://github.com/rojo-rbx/rojo/pull/830
 
@@ -29,7 +31,7 @@
 
 ## [7.4.0-rc1] - October 3, 2023
 ### Additions
-* Added headless API for Studio companion plugins. ([#631])
+
 #### Project format
 * Added support for `.toml` files to `$path` ([#633])
 * Added support for `Font` and `CFrame` attributes ([rbx-dom#299], [rbx-dom#296])
@@ -153,7 +155,6 @@
 * Better settings controls ([#725])
 * Rework patch visualizer with many fixes and improvements ([#713], [#726], [#755])
 
-[#631]: https://github.com/rojo-rbx/rojo/pull/631
 [#668]: https://github.com/rojo-rbx/rojo/pull/668
 [#674]: https://github.com/rojo-rbx/rojo/pull/674
 [#675]: https://github.com/rojo-rbx/rojo/pull/675
