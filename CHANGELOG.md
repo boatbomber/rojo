@@ -1,7 +1,8 @@
 # Rojo Changelog
 
 ## Unreleased Changes
-* Added headless API for Studio companion plugins. ([#631])
+* Added headless API for Studio companion plugins. ([#639])
+* Rojo now converts any line endings to LF, preventing spurious diffs when syncing Lua files on Windows ([#854])
 * Fixed Rojo plugin failing to connect when project contains certain unreadable properties ([#848])
 * Added popout diff visualizer for table properties like Attributes and Tags ([#834])
 * Updated Theme to use Studio colors ([#838])
@@ -54,13 +55,14 @@
 
     **All** sync rules are reset between project files, so they must be specified in each one when nesting them. This is to ensure that nothing can break other projects by changing how files are synced!
 
-[#631]: https://github.com/rojo-rbx/rojo/pull/631
+[#639]: https://github.com/rojo-rbx/rojo/pull/639
 [#813]: https://github.com/rojo-rbx/rojo/pull/813
 [#834]: https://github.com/rojo-rbx/rojo/pull/834
 [#838]: https://github.com/rojo-rbx/rojo/pull/838
 [#840]: https://github.com/rojo-rbx/rojo/pull/840
 [#847]: https://github.com/rojo-rbx/rojo/pull/847
 [#848]: https://github.com/rojo-rbx/rojo/pull/848
+[#854]: https://github.com/rojo-rbx/rojo/pull/854
 
 
 ## [7.4.0] - January 16, 2024
