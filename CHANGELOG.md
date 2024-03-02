@@ -6,6 +6,7 @@
 * Fixed Rojo plugin failing to connect when project contains certain unreadable properties ([#848])
 * Added popout diff visualizer for table properties like Attributes and Tags ([#834])
 * Updated Theme to use Studio colors ([#838])
+* Improved patch visualizer UX ([#883])
 * Added experimental setting for Auto Connect in playtests ([#840])
 * Fixed http error handling so Rojo can be used in Github Codespaces ([#847])
 * Improved settings UI ([#886])
@@ -62,6 +63,7 @@
 [#838]: https://github.com/rojo-rbx/rojo/pull/838
 [#840]: https://github.com/rojo-rbx/rojo/pull/840
 [#886]: https://github.com/rojo-rbx/rojo/pull/886
+[#883]: https://github.com/rojo-rbx/rojo/pull/883
 
 ## [7.4.1] - February 20, 2024
 * Made the `name` field optional on project files ([#870])
