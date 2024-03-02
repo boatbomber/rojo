@@ -28,6 +28,10 @@ local Assets = {
 			Expand = "rbxassetid://12045401097",
 			Settings = "rbxassetid://12046309515",
 			Transact = "rbxassetid://16350762910",
+			Checkmark = "rbxassetid://16571012729",
+			Exclamation = "rbxassetid://16571172190",
+			SyncSuccess = "rbxassetid://16565035221",
+			SyncWarning = "rbxassetid://16565325171",
 		},
 		Diff = {
 			Add = "rbxassetid://10434145835",

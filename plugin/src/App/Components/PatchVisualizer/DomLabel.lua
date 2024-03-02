@@ -1,5 +1,4 @@
 local SelectionService = game:GetService("Selection")
-local StudioService = game:GetService("StudioService")
 
 local Rojo = script:FindFirstAncestor("Rojo")
 local Plugin = Rojo.Plugin
@@ -110,7 +109,7 @@ function DomLabel:render()
 			if props.isFinalChild and i == depth then
 				-- This line stops halfway down to merge with our connector for the right angle
 				lineGuides["Line_" .. i] = e("Frame", {
-					Size = UDim2.new(0, 2, 1, -9),
+					Size = UDim2.new(0, 2, 0, 15),
 					Position = UDim2.new(0, (12 * (i - 1)) + 6, 0, -1),
 					BorderSizePixel = 0,
 					BackgroundTransparency = props.transparency,
@@ -234,6 +233,59 @@ function DomLabel:render()
 				TextTruncate = Enum.TextTruncate.AtEnd,
 				Size = UDim2.new(1, -indent - 50, 0, 24),
 				Position = UDim2.new(0, indent + 22, 0, 0),
+			}),
+			ChangeInfo = e("Frame", {
+				BackgroundTransparency = 1,
+				Size = UDim2.new(1, -indent - 80, 0, 24),
+				Position = UDim2.new(1, -2, 0, 0),
+				AnchorPoint = Vector2.new(1, 0),
+			}, {
+				Layout = e("UIListLayout", {
+					FillDirection = Enum.FillDirection.Horizontal,
+					HorizontalAlignment = Enum.HorizontalAlignment.Right,
+					VerticalAlignment = Enum.VerticalAlignment.Center,
+					SortOrder = Enum.SortOrder.LayoutOrder,
+					Padding = UDim.new(0, 4),
+				}),
+				Edits = if props.changeInfo and props.changeInfo.edits
+					then e("TextLabel", {
+						Text = props.changeInfo.edits,
+						BackgroundTransparency = 1,
+						Font = Enum.Font.Gotham,
+						TextSize = 14,
+						TextColor3 = theme.SubTextColor,
+						TextTransparency = props.transparency,
+						Size = UDim2.new(0, 0, 0, 16),
+						AutomaticSize = Enum.AutomaticSize.X,
+						LayoutOrder = 2,
+					})
+					else nil,
+				Applied = if props.changeInfo and props.changeInfo.applied
+					then e("TextLabel", {
+						Text = props.changeInfo.applied .. if props.changeInfo.failed then "," else "",
+						BackgroundTransparency = 1,
+						Font = Enum.Font.Gotham,
+						TextSize = 14,
+						TextColor3 = theme.TextColor,
+						TextTransparency = props.transparency,
+						Size = UDim2.new(0, 0, 0, 16),
+						AutomaticSize = Enum.AutomaticSize.X,
+						LayoutOrder = 4,
+					})
+					else nil,
+				Failed = if props.changeInfo and props.changeInfo.failed
+					then e("TextLabel", {
+						Text = props.changeInfo.failed,
+						BackgroundTransparency = 1,
+						Font = Enum.Font.Gotham,
+						TextSize = 14,
+						TextColor3 = theme.Diff.Warning,
+						TextTransparency = props.transparency,
+						Size = UDim2.new(0, 0, 0, 16),
+						AutomaticSize = Enum.AutomaticSize.X,
+						LayoutOrder = 6,
+					})
+					else nil,
 			}),
 			LineGuides = e("Folder", nil, lineGuides),
 		})
