@@ -13,6 +13,7 @@ local Theme = require(Plugin.App.Theme)
 local Checkbox = require(Plugin.App.Components.Checkbox)
 local Dropdown = require(Plugin.App.Components.Dropdown)
 local IconButton = require(Plugin.App.Components.IconButton)
+local Tag = require(Plugin.App.Components.Tag)
 
 local e = Roact.createElement
 
@@ -54,7 +55,7 @@ end
 
 function Setting:render()
 	return Theme.with(function(theme)
-		theme = theme.Settings
+		local settingsTheme = theme.Settings
 
 		return e("Frame", {
 			Size = self.contentSize:map(function(value)
@@ -109,7 +110,7 @@ function Setting:render()
 					then e(IconButton, {
 						icon = Assets.Images.Icons.Reset,
 						iconSize = 24,
-						color = theme.BackButtonColor,
+						color = settingsTheme.BackButtonColor,
 						transparency = self.props.transparency,
 						visible = self.props.showReset,
 						layoutOrder = -1,
@@ -124,17 +125,13 @@ function Setting:render()
 				BackgroundTransparency = 1,
 			}, {
 				Name = e("TextLabel", {
-					Text = (
-						if self.props.experimental
-							then '<font color="#FF8E3C">⚠ </font>'
-							elseif
-								self.props.developerDebug
-							then '<font family="rbxasset://fonts/families/Guru.json" color="#35B5FF">⚑ </font>' -- Guru is the only font with the flag emoji
-							else ""
-					) .. self.props.name,
+					Text = self.props.name,
 					Font = Enum.Font.GothamBold,
 					TextSize = 17,
-					TextColor3 = theme.Setting.NameColor,
+					TextColor3 = if self.props.experimental
+						then settingsTheme.Setting.ExperimentalColor
+						elseif self.props.developerDebug then settingsTheme.Setting.DebugColor
+						else settingsTheme.Setting.NameColor,
 					TextXAlignment = Enum.TextXAlignment.Left,
 					TextTransparency = self.props.transparency,
 					RichText = true,
@@ -145,15 +142,28 @@ function Setting:render()
 					BackgroundTransparency = 1,
 				}),
 
+				Tag = if self.props.experimental or self.props.developerDebug
+					then e(Tag, {
+						layoutOrder = 2,
+						transparency = self.props.transparency,
+						textColor = theme.BackgroundColor,
+						text = if self.props.experimental then "EXPERIMENTAL" else "DEBUG",
+						icon = if self.props.experimental
+							then Assets.Images.Icons.Experimental
+							else Assets.Images.Icons.Debug,
+						color = if self.props.experimental
+							then settingsTheme.Setting.ExperimentalColor
+							elseif self.props.developerDebug then settingsTheme.Setting.DebugColor
+							else settingsTheme.BrandColor,
+					})
+					else nil,
+
 				Description = e("TextLabel", {
-					Text = (if self.props.experimental
-						then '<font color="#FF8E3C">[Experimental] </font>'
-						elseif self.props.developerDebug then '<font color="#35B5FF">[Dev Debug] </font>'
-						else "") .. self.props.description,
+					Text = self.props.description,
 					Font = Enum.Font.Gotham,
 					LineHeight = 1.2,
 					TextSize = 14,
-					TextColor3 = theme.Setting.DescriptionColor,
+					TextColor3 = settingsTheme.Setting.DescriptionColor,
 					TextXAlignment = Enum.TextXAlignment.Left,
 					TextTransparency = self.props.transparency,
 					TextWrapped = true,
@@ -163,8 +173,7 @@ function Setting:render()
 						containerSize = self.containerSize,
 						inputSize = self.inputSize,
 					}):map(function(values)
-						local desc = (if self.props.experimental then "[Experimental] " else "")
-							.. self.props.description
+						local desc = self.props.description
 						local offset = values.inputSize.X + 5
 						local textBounds = getTextBounds(
 							desc,
@@ -176,7 +185,7 @@ function Setting:render()
 						return UDim2.new(1, -offset, 0, textBounds.Y)
 					end),
 
-					LayoutOrder = 2,
+					LayoutOrder = 3,
 					BackgroundTransparency = 1,
 				}),
 
@@ -198,7 +207,7 @@ function Setting:render()
 			}),
 
 			Divider = e("Frame", {
-				BackgroundColor3 = theme.DividerColor,
+				BackgroundColor3 = settingsTheme.DividerColor,
 				BackgroundTransparency = self.props.transparency,
 				Size = UDim2.new(1, 0, 0, 1),
 				BorderSizePixel = 0,
