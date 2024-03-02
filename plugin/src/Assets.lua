@@ -32,7 +32,7 @@ local Assets = {
 			Exclamation = "rbxassetid://16571172190",
 			SyncSuccess = "rbxassetid://16565035221",
 			SyncWarning = "rbxassetid://16565325171",
-			Experimental = "rbxassetid://16571019891",
+			Warning = "rbxassetid://16571019891",
 			Debug = "rbxassetid://16588411361",
 		},
 		Diff = {
