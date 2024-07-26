@@ -11,18 +11,25 @@ local e = Roact.createElement
 
 local EditableImage = require(Plugin.App.Components.EditableImage)
 
-local function getRecoloredClassIcon(className, color)
-	-- HACK: DataModel is currently missing an icon so we redirect it
-	if className == "DataModel" then
-		className = "Class"
+local imageCache = {}
+local function getImageSizeAndPixels(image)
+	if not imageCache[image] then
+		local editableImage = AssetService:CreateEditableImageAsync(image)
+		imageCache[image] = {
+			Size = editableImage.Size,
+			Pixels = editableImage:ReadPixels(Vector2.zero, editableImage.Size),
+		}
 	end
 
+	return imageCache[image].Size, table.clone(imageCache[image].Pixels)
+end
+
+local function getRecoloredClassIcon(className, color)
 	local iconProps = StudioService:GetClassIcon(className)
 
 	if iconProps and color then
 		local success, editableImageSize, editableImagePixels = pcall(function()
-			local editableImage = AssetService:CreateEditableImageAsync(iconProps.Image)
-			local pixels = editableImage:ReadPixels(Vector2.zero, editableImage.Size)
+			local size, pixels = getImageSizeAndPixels(iconProps.Image)
 
 			local minVal, maxVal = math.huge, -math.huge
 			for i = 1, #pixels, 4 do
@@ -51,7 +58,7 @@ local function getRecoloredClassIcon(className, color)
 				local newPixelColor = Color3.fromHSV(hue, sat, newVal)
 				pixels[i], pixels[i + 1], pixels[i + 2] = newPixelColor.R, newPixelColor.G, newPixelColor.B
 			end
-			return editableImage.Size, pixels
+			return size, pixels
 		end)
 		if success then
 			iconProps.EditableImagePixels = editableImagePixels

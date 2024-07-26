@@ -11,6 +11,7 @@ use crate::{
         InstanceContext, InstanceMetadata, InstanceSnapshot, InstigatingSource, PathIgnoreRule,
         SyncRule,
     },
+    RojoRef,
 };
 
 use super::{emit_legacy_scripts_default, snapshot_from_vfs};
@@ -21,9 +22,12 @@ pub fn snapshot_project(
     path: &Path,
     name: &str,
 ) -> anyhow::Result<Option<InstanceSnapshot>> {
-    let project = Project::load_from_slice(&vfs.read(path)?, path)
+    let project = Project::load_exact(vfs, path, Some(name))
         .with_context(|| format!("File was not a valid Rojo project: {}", path.display()))?;
-    let project_name = project.name.as_deref().unwrap_or(name);
+    let project_name = match project.name.as_deref() {
+        Some(name) => name,
+        None => panic!("Project is missing a name"),
+    };
 
     let mut context = context.clone();
     context.clear_sync_rules();
@@ -277,6 +281,10 @@ pub fn snapshot_project_node(
         // TODO: Introduce a strict mode where $ignoreUnknownInstances is never
         // set implicitly.
         metadata.ignore_unknown_instances = true;
+    }
+
+    if let Some(id) = &node.id {
+        metadata.specified_id = Some(RojoRef::new(id.clone()))
     }
 
     metadata.instigating_source = Some(InstigatingSource::ProjectNode(

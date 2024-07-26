@@ -570,11 +570,6 @@ function App:startSession(host: string?, port: string?)
 		host, port = self:getHostAndPort()
 	end
 
-	local sessionOptions = {
-		openScriptsExternally = Settings:get("openScriptsExternally"),
-		twoWaySync = Settings:get("twoWaySync"),
-	}
-
 	local baseUrl = if string.find(host, "^https?://")
 		then string.format("%s:%s", host, port)
 		else string.format("http://%s:%s", host, port)
@@ -582,8 +577,7 @@ function App:startSession(host: string?, port: string?)
 
 	local serveSession = ServeSession.new({
 		apiContext = apiContext,
-		openScriptsExternally = sessionOptions.openScriptsExternally,
-		twoWaySync = sessionOptions.twoWaySync,
+		twoWaySync = Settings:get("twoWaySync"),
 	})
 
 	self.cleanupPrecommit = serveSession.__reconciler:hookPrecommit(function(patch, instanceMap)
@@ -737,6 +731,9 @@ function App:startSession(host: string?, port: string?)
 					return "Accept"
 				end
 			end
+		elseif confirmationBehavior == "Never" then
+			Log.trace("Accepting patch without confirmation because behavior is set to Never")
+			return "Accept"
 		end
 
 		-- The datamodel name gets overwritten by Studio, making confirmation of it intrusive
