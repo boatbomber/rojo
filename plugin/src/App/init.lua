@@ -341,6 +341,14 @@ function App:closeNotification(id: number)
 end
 
 function App:checkForUpdates()
+	--[[
+	Rojo Boatly does not follow the regular updates,
+	so we disable this feature in Boatly
+	--]]
+	if true then
+		return
+	end
+
 	if not Settings:get("checkForUpdates") then
 		return
 	end
