@@ -198,6 +198,10 @@ function SettingsPage:render()
 					}),
 				}),
 
+				--[[
+				Rojo Boatly does not follow the regular updates,
+				so we disable this feature in Boatly
+
 				CheckForUpdates = e(Setting, {
 					id = "checkForUpdates",
 					name = "Check For Updates",
@@ -216,6 +220,7 @@ function SettingsPage:render()
 						then false -- Must be a local install to allow prerelease checks
 						else Settings:getBinding("checkForUpdates"),
 				}),
+				--]]
 
 				AutoConnectPlaytestServer = e(Setting, {
 					id = "autoConnectPlaytestServer",
