@@ -1,9 +1,8 @@
 # Rojo Changelog
 
 ## Unreleased Changes
+* Support for a `$schema` field in all special JSON files (`.project.json`, `.model.json`, and `.meta.json`) ([#974])
 * Added headless API for Studio companion plugins. ([#639])
-* Rojo now converts any line endings to LF, preventing spurious diffs when syncing Lua files on Windows ([#854])
-* Fixed Rojo plugin failing to connect when project contains certain unreadable properties ([#848])
 * Projects may now manually link `Ref` properties together using `Attributes`. ([#843])
  	This has two parts: using `id` or `$id` in JSON files or a `Rojo_Target` attribute, an Instance
     is given an ID. Then, that ID may be used elsewhere in the project to point to an Instance
@@ -27,11 +26,13 @@
 * Added popout diff visualizer for table properties like Attributes and Tags ([#834])
 * Updated Theme to use Studio colors ([#838])
 * Improved patch visualizer UX ([#883])
+* Added update notifications for newer compatible versions in the Studio plugin. ([#832])
 * Added experimental setting for Auto Connect in playtests ([#840])
 * Fixed http error handling so Rojo can be used in Github Codespaces ([#847])
 * Improved settings UI ([#886])
 * Improved settings UI ([#886])
 * `Open Scripts Externally` option can now be changed while syncing ([#911])
+* The sync reminder notification will now tell you what was last synced and when ([#987])
 * Projects may now specify rules for syncing files as if they had a different file extension. ([#813])
  	This is specified via a new field on project files, `syncRules`:
 
@@ -81,6 +82,7 @@
 
 [#639]: https://github.com/rojo-rbx/rojo/pull/639
 [#813]: https://github.com/rojo-rbx/rojo/pull/813
+[#832]: https://github.com/rojo-rbx/rojo/pull/832
 [#834]: https://github.com/rojo-rbx/rojo/pull/834
 [#838]: https://github.com/rojo-rbx/rojo/pull/838
 [#840]: https://github.com/rojo-rbx/rojo/pull/840
@@ -91,6 +93,14 @@
 [#886]: https://github.com/rojo-rbx/rojo/pull/886
 [#911]: https://github.com/rojo-rbx/rojo/pull/911
 [#915]: https://github.com/rojo-rbx/rojo/pull/915
+[#974]: https://github.com/rojo-rbx/rojo/pull/974
+[#987]: https://github.com/rojo-rbx/rojo/pull/987
+
+## [7.4.3] - August 6th, 2024
+* Fixed issue with building binary files introduced in 7.4.2
+* Fixed `value of type nil cannot be converted to number` warning spam in output. [#955]
+
+[#955]: https://github.com/rojo-rbx/rojo/pull/955
 
 ## [7.4.2] - July 23, 2024
 * Added Never option to Confirmation ([#893])
