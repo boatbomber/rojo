@@ -341,6 +341,7 @@ function App:closeNotification(id: number)
 end
 
 function App:checkForUpdates()
+	--[[ Boatly exists outside the normal release cycle
 	if not Settings:get("checkForUpdates") then
 		return
 	end
@@ -372,6 +373,7 @@ function App:checkForUpdates()
 			},
 		}
 	)
+	--]]
 end
 
 function App:getPriorSyncInfo(): { host: string?, port: string?, projectName: string?, timestamp: number? }
