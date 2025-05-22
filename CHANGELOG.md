@@ -1,5 +1,11 @@
 # Rojo Changelog
 
+## Unreleased Changes
+
+* Added headless API for Studio companion plugins. ([#639])
+
+[#639]: https://github.com/rojo-rbx/rojo/pull/639
+
 ## 7.5.1 - April 25th, 2025
 * Fixed output spam related to `Instance.Capabilities` in the plugin
 
@@ -193,6 +199,7 @@
 
 ## [7.4.0-rc1] - October 3, 2023
 ### Additions
+
 #### Project format
 * Added support for `.toml` files to `$path` ([#633])
 * Added support for `Font` and `CFrame` attributes ([rbx-dom#299], [rbx-dom#296])
