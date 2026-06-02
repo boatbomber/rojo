@@ -31,6 +31,7 @@ Making a new release? Simply add the new header with the version and date undern
 
 ## Unreleased
 
+* Added headless API for Studio companion plugins. ([#639])
 * `inf` and `nan` values in properties are now synced ([#1176])
 * Fixed a bug caused by having reference properties (such as `ObjectValue.Value`) that point to an Instance not included in syncback. ([#1179])
 * Fixed instance replacement fallback failing when too many instances needed to be replaced. ([#1192])
@@ -40,6 +41,7 @@ Making a new release? Simply add the new header with the version and date undern
 * Added a "Forget" option to the sync reminder notification to avoid being reminded for that place in the future ([#1215])
 * Improves relative path calculation for sourcemap generation to avoid issues with Windows UNC paths. ([#1217])
 
+[#639]: https://github.com/rojo-rbx/rojo/pull/639
 [#1176]: https://github.com/rojo-rbx/rojo/pull/1176
 [#1179]: https://github.com/rojo-rbx/rojo/pull/1179
 [#1192]: https://github.com/rojo-rbx/rojo/pull/1192
