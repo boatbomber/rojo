@@ -187,6 +187,11 @@ function Version.retrieveLatestCompatible(options: {
 end
 
 function Version.getUpdateMessage(): string?
+	-- Boatly exists outside the normal release cycle
+	if true then
+		return nil
+	end
+
 	if not Settings:get("checkForUpdates") then
 		return
 	end
